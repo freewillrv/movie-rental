@@ -44,7 +44,7 @@ password should be hashed
     --> Hash with salt store that
     --> {Hash-Algo}<actual_hash_value>
 Add Unique key for userName
-Add index for (userName and password) 
+No index needed for password as we will use PBKDF2
 
 Private Key for Auth Service
 To generate the tokens, access and refresh
