@@ -12,4 +12,3 @@ CREATE SCHEMA `movie_rental` DEFAULT CHARACTER SET utf16 ;
 #Common commands
 #Restart Docker Daemon
 sudo systemctl restart docker
-
