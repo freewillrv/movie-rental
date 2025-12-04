@@ -1,61 +1,61 @@
 # Data Types --> https://docs.liquibase.com/pro/user-guide-4-33/how-does-liquibase-handle-data-types
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: Rahul Verma
-      labels: Table Creation Sample with All possible options
-      context: Test Table creation samples
-      comment: Creating Test tables, with Liquibase.
-      changes:
-        - createTable:
-            tableName: vehicle_type
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: varchar(50)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: wheels
-                  type: SMALLINT
-                  constraints:
-                    nullable: false
-        - createTable:
-            tableName: vehicle
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: varchar(50)
-                  constraints:
-                    nullable: true
-              - column:
-                  name: vehicle_type_id
-                  type: int
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_vehicle_vehicle_type
-                    references: vehicle_type(id)
-                    onDelete: RESTRICT
-                    onUpdate: NO ACTION
-        - createIndex:
-            indexName: idx_vechile_vechicle_type
-            tableName: vehicle
-            columns:
-              - column:
-                  name: vehicle_type_id
+#  - changeSet:
+#      id: 1
+#      author: Rahul Verma
+#      labels: Table Creation Sample with All possible options
+#      context: Test Table creation samples
+#      comment: Creating Test tables, with Liquibase.
+#      changes:
+#        - createTable:
+#            tableName: vehicle_type
+#            columns:
+#              - column:
+#                  name: id
+#                  type: int
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: wheels
+#                  type: SMALLINT
+#                  constraints:
+#                    nullable: false
+#        - createTable:
+#            tableName: vehicle
+#            columns:
+#              - column:
+#                  name: id
+#                  type: int
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    nullable: true
+#              - column:
+#                  name: vehicle_type_id
+#                  type: int
+#                  constraints:
+#                    nullable: false
+#                    foreignKeyName: fk_vehicle_vehicle_type
+#                    references: vehicle_type(id)
+#                    onDelete: RESTRICT
+#                    onUpdate: NO ACTION
+#        - createIndex:
+#            indexName: idx_vechile_vechicle_type
+#            tableName: vehicle
+#            columns:
+#              - column:
+#                  name: vehicle_type_id
   - includeAll:
       path: ./db/release-1/
