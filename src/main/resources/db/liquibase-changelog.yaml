@@ -57,3 +57,5 @@ databaseChangeLog:
             columns:
               - column:
                   name: vehicle_type_id
+  - includeAll:
+      path: ./db/release-1/

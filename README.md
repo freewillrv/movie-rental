@@ -1,11 +1,11 @@
 # movie-rental
-Spring Boot Example with Elastic, H2 SQL, Kafka.
+Spring Boot Example with Elastic, MySQL, Kafka, Spring Security, Hibernate.
 
 ## Requirements
 * Movie Rental Service for shops.
 * Should provide common Movie DB for ease of onboarding.
 * Should provide Mechanism to onboard users, movie catalogue, fast search for catalogue.
-* System should be multi tenanted.
+* System should be multi tenanted. (Future iteration)
 * Support Elastic search
 * Support API for admin for store onboarding APIs.
 * Support Authz and Authentication via Spring.
@@ -43,7 +43,7 @@ id primary key - system generated
 password should be hashed
     --> Hash with salt store that
     --> {Hash-Algo}<actual_hash_value>
-Add Unique key for userName
+Add Unique key for userName, email
 No index needed for password as we will use PBKDF2
 
 Private Key for Auth Service
