@@ -87,9 +87,5 @@ public class AbstractCommonService<T extends CommonEntity> {
         }
     }
 
-    public Page<T> list(final Pageable pageable) {
-        ObjectUtils.isEmpty(pageable)
-    }
-
 
 }
