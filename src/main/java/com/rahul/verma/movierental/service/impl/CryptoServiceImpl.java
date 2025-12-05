@@ -1,5 +1,6 @@
-package com.rahul.verma.movierental.service;
+package com.rahul.verma.movierental.service.impl;
 
+import com.rahul.verma.movierental.service.SecretsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
@@ -13,7 +14,7 @@ import static com.rahul.verma.movierental.util.Constants.ENV_HASHING_ITERATIONS;
  *
  */
 @Service
-public class CryptoService {
+public class CryptoServiceImpl {
 
     private final Environment environment;
     private final SecretsManager secretsManager;
@@ -21,7 +22,7 @@ public class CryptoService {
     private final Pbkdf2PasswordEncoder encoder;
 
     @Autowired
-    public CryptoService(final SecretsManager secretsManager, final Environment environment) {
+    public CryptoServiceImpl(final SecretsManager secretsManager, final Environment environment) {
         this.secretsManager = secretsManager;
         this.environment = environment;
         this.iterations = environment.getRequiredProperty(ENV_HASHING_ITERATIONS, Integer.class);
