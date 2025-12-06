@@ -1,30 +1,28 @@
 package com.rahul.verma.movierental.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import jakarta.persistence.Entity;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
-@Entity
+@MappedSuperclass
 public class CommonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant modifiedAt;
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_at")
-    private Instant createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
 }

@@ -1,5 +1,8 @@
 package com.rahul.verma.movierental.service;
 
+import com.rahul.verma.movierental.dto.MessageDto;
+import com.rahul.verma.movierental.dto.ResponseDto;
+import com.rahul.verma.movierental.dto.ResponseListDto;
 import com.rahul.verma.movierental.entity.CommonEntity;
 import com.rahul.verma.movierental.exception.BaseException;
 import com.rahul.verma.movierental.exception.InternalServerException;
@@ -14,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -86,6 +90,11 @@ public class AbstractCommonService<T extends CommonEntity> {
                     resourceName, updatedEntity.getId()));
         }
     }
+    public List<T> findAll() {
+        return repository.findAll();
+    }
 
+   // pageable and page
+    // finadAll
 
 }
