@@ -17,6 +17,7 @@ public class UserAssembler {
         u.setCreatedAt(dto.getCreatedAt());
         u.setLastLogin(dto.getLastLogin());
         u.setModifiedAt(dto.getModifiedAt());
+        u.setPassword(dto.getPassword());
         return u;
     }
 
@@ -25,6 +26,9 @@ public class UserAssembler {
         dto.setEmailId(user.getEmailId());
         dto.setGivenName(user.getGivenName());
         dto.setLastName(user.getLastName());
+        dto.setModifiedAt(user.getModifiedAt());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setLastLogin(user.getLastLogin());
         return dto;
     }
 }
