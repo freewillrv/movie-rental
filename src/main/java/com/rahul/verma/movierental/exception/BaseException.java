@@ -8,6 +8,7 @@ import lombok.Setter;
 public class BaseException extends RuntimeException {
 
     private final int statusCode;
+    protected String defaultMessage;
 
     public BaseException(Throwable cause, String message, int statusCode) {
         super(cause);

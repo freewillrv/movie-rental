@@ -47,7 +47,7 @@ databaseChangeLog:
                   name: last_login
                   type: TIMESTAMP
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: created_at
                   type: TIMESTAMP

@@ -2,15 +2,17 @@ package com.rahul.verma.movierental.service;
 
 import com.rahul.verma.movierental.entity.CommonEntity;
 import com.rahul.verma.movierental.exception.BaseException;
+import com.rahul.verma.movierental.exception.ConflictException;
 import com.rahul.verma.movierental.exception.InternalServerException;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.exception.ValidationFailedException;
-import org.springframework.data.jpa.repository.JpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -63,6 +65,9 @@ public class AbstractCommonService<T extends CommonEntity> {
             return repository.save(entityForSave);
         } catch (BaseException baseException) {
             throw baseException;
+        } catch (DataIntegrityViolationException duplicate) {
+            log.info("Duplicate User create blocked for user {}.", entity.getId());
+            throw new ConflictException(duplicate, String.format(resourceName + " already exists."));
         } catch (Exception e) {
             throw new InternalServerException(e, String.format("Error saving {} to the system. Please try again later",
                     resourceName));
