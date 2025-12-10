@@ -2,7 +2,10 @@ package com.rahul.verma.movierental.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,8 +14,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ResponseListDto {
-    List<ResponseDto> data;
+    List data;
     List<MessageDto> messages;
-    Integer statusCode;
 }
