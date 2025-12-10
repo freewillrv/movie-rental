@@ -1,15 +1,10 @@
 package com.rahul.verma.movierental.service;
 
-import com.rahul.verma.movierental.dto.MessageDto;
-import com.rahul.verma.movierental.dto.ResponseDto;
-import com.rahul.verma.movierental.dto.ResponseListDto;
 import com.rahul.verma.movierental.entity.CommonEntity;
 import com.rahul.verma.movierental.exception.BaseException;
 import com.rahul.verma.movierental.exception.InternalServerException;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.exception.ValidationFailedException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -38,8 +33,18 @@ public class AbstractCommonService<T extends CommonEntity> {
         // Do nothing classes can override and custom validations and throw exceptions
     }
 
+    protected T preCreateTransform(@Valid final T entity) {
+        // Do nothing classes can override and custom validations and throw exceptions
+        return entity;
+    }
+
     protected void validateDelete(final T id) {
         // Do nothing classes can override and custom validations and throw exceptions
+    }
+
+    protected T preUpdateTransform(T updatedEntity, T entityFromDB) {
+        // Do nothing classes can override and custom validations and throw exceptions
+        return updatedEntity;
     }
 
     protected void validateUpdate(T updatedEntity, T entityFromDB) {
@@ -50,10 +55,12 @@ public class AbstractCommonService<T extends CommonEntity> {
     public T create(@Valid final T entity) {
         try {
             validateCreate(entity);
-            if (ObjectUtils.isEmpty(entity)) {
+            final T entityForSave = preCreateTransform(entity);
+            validateCreate(entityForSave);
+            if (ObjectUtils.isEmpty(entityForSave)) {
                 throw new ValidationFailedException(String.format("{} cannot be empty", resourceName));
             }
-            return repository.save(entity);
+            return repository.save(entityForSave);
         } catch (BaseException baseException) {
             throw baseException;
         } catch (Exception e) {
@@ -81,20 +88,40 @@ public class AbstractCommonService<T extends CommonEntity> {
     @Transactional
     public T update(final T updatedEntity) {
         try {
-            validateUpdate(updatedEntity, repository.getReferenceById(updatedEntity.getId()));
+            T entityInDB = repository.getReferenceById(updatedEntity.getId());
+            validateUpdate(updatedEntity, entityInDB);
+            T entityToUpdate = preUpdateTransform(updatedEntity, entityInDB);
             return repository.save(updatedEntity);
         } catch (BaseException baseException) {
             throw baseException;
         } catch (EntityNotFoundException entityNotFoundException) {
             throw new NotFoundException(entityNotFoundException, String.format("{} with id: {} not found",
                     resourceName, updatedEntity.getId()));
+        } catch (Exception e) {
+            throw new InternalServerException(e, String.format("Error updating {} with id: {} from the system. Please try again later"
+                    , resourceName, updatedEntity.getId()));
         }
     }
+
     public List<T> findAll() {
         return repository.findAll();
     }
 
-   // pageable and page
+    public T getById(final int id) {
+        try {
+            return repository.getReferenceById(id);
+        } catch (BaseException baseException) {
+            throw baseException;
+        } catch (EntityNotFoundException entityNotFoundException) {
+            throw new NotFoundException(entityNotFoundException, String.format("{} with id: {} not found",
+                    resourceName, id));
+        } catch (Exception e) {
+            throw new InternalServerException(e, String.format("Error fetching {} with id: {} from the system. Please try again later"
+                    , resourceName, id));
+        }
+    }
+
+    // pageable and page
     // finadAll
 
 }

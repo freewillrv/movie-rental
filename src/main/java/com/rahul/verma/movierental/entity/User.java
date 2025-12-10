@@ -32,4 +32,5 @@ public class User extends CommonEntity {
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
+
 }

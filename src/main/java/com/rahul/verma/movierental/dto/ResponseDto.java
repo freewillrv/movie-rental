@@ -12,9 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto<T> {
-    @JsonUnwrapped
-    T data;
+@Builder
+public class ResponseDto {
     List<MessageDto> messages;
-    Integer statusCode;
 }
