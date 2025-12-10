@@ -1,15 +1,15 @@
 package com.rahul.verma.movierental.service;
 
-import com.rahul.verma.movierental.dto.MessageDto;
-import com.rahul.verma.movierental.dto.ResponseDto;
-import com.rahul.verma.movierental.dto.ResponseListDto;
+import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.entity.CommonEntity;
 import com.rahul.verma.movierental.exception.BaseException;
 import com.rahul.verma.movierental.exception.InternalServerException;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.exception.ValidationFailedException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class AbstractCommonService<T extends CommonEntity> {
@@ -93,8 +95,55 @@ public class AbstractCommonService<T extends CommonEntity> {
     public List<T> findAll() {
         return repository.findAll();
     }
+    public Page<T> findAll(PageableInput input){
+        Pageable pageable = getPageable(input);
+        return repository.findAll(pageable);
+    }
+    protected Pageable getPageable(PageableInput input) {
 
-   // pageable and page
-    // finadAll
+        String sortBy = sortableAttributes.contains(input.getSortBy())
+                ? input.getSortBy()
+                : "id";
+
+        Sort.Direction direction =
+                "desc".equalsIgnoreCase(input.getDirection()) ?
+                        Sort.Direction.DESC : Sort.Direction.ASC;
+
+        return PageRequest.of(
+                input.getPage(),
+                input.getSize(),
+                Sort.by(direction, sortBy)
+        );
+    }
+    private Sort.Order parseSortOrder(String sortString) {
+
+        String[] arr = sortString.split(",");
+        String field = arr[0];
+
+        if (!sortableAttributes.contains(field)) {
+            throw new ValidationFailedException(
+                    "Sorting by '" + field + "' is not allowed"
+            );
+        }
+
+        Sort.Direction dir =
+                arr.length > 1 && arr[1].equalsIgnoreCase("desc")
+                        ? Sort.Direction.DESC
+                        : Sort.Direction.ASC;
+
+        return new Sort.Order(dir, field);
+    }
+    protected <R> PaginatedResponseDto<R> paginate(Page<R> page, List<MessageDto> messages, int statusCode) {
+        PaginatedResponseDto<R> response = new PaginatedResponseDto<>();
+        response.setData(page.getContent());
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalItems(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+        response.setMessages(messages);
+        response.setStatusCode(statusCode);
+        return response;
+    }
+
 
 }

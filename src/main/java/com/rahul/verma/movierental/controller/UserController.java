@@ -1,8 +1,6 @@
 package com.rahul.verma.movierental.controller;
 
-import com.rahul.verma.movierental.dto.ResponseDto;
-import com.rahul.verma.movierental.dto.ResponseListDto;
-import com.rahul.verma.movierental.dto.UserDto;
+import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
@@ -44,9 +42,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseListDto<UserDto>> getAllUsers() {
-        ResponseListDto<UserDto> response = userService.getAllUsers();
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+    public PaginatedResponseDto<UserDto> getAllUsers(@ModelAttribute PageableInput input) {
+        return userService.getAllUsers(input);
     }
 
 }
