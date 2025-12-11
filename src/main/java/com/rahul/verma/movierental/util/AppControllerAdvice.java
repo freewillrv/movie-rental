@@ -22,7 +22,7 @@ public class AppControllerAdvice {
         // Return the response entity with a specific HTTP status
         return ResponseEntity.status(ex.getStatusCode())
                 .body(ResponseDto.builder()
-                        .messages(List.of(new MessageDto(ex.getDefaultMessage(), HttpStatus.OK.value())))
+                        .messages(List.of(new MessageDto(ex.getDefaultMessage(), ex.getStatusCode())))
                         .build());
     }
 
