@@ -19,13 +19,11 @@ import java.util.Set;
 @Service
 public class UserServiceImpl extends AbstractCommonService<User> implements UserService {
 
-    private final UserRepository userRepository;
     private final CryptoServiceImpl cryptoService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, CryptoServiceImpl cryptoService) {
         super(userRepository, "User", Set.of("id", "createdAt", "modifiedAt"));
-        this.userRepository = userRepository;
         this.cryptoService = cryptoService;
     }
 
