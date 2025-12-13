@@ -2,25 +2,19 @@ package com.rahul.verma.movierental.controller;
 
 import com.rahul.verma.movierental.assembler.UserAssembler;
 import com.rahul.verma.movierental.dto.MessageDto;
-import com.rahul.verma.movierental.dto.ResponseListDto;
 import com.rahul.verma.movierental.dto.UserDto;
+import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.service.UserService;
 import jakarta.validation.Valid;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
@@ -34,14 +28,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<@NonNull UserDto> createUser(@RequestBody UserDto userDto) {
         final UserDto responseUserDto = userAssembler.mapToDto(userService.create(userAssembler.mapToEntity(userDto)));
         responseUserDto.setMessages(List.of(new MessageDto("Created user successfully", HttpStatus.OK.value())));
         return new ResponseEntity<>(responseUserDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Integer id, @RequestBody @Valid  UserDto userDto) {
+    public ResponseEntity<@NonNull UserDto> updateUser(@PathVariable Integer id, @RequestBody @Valid  UserDto userDto) {
         userDto.setId(id);  // ensure path ID is used
         final UserDto responseUserDto = userAssembler.mapToDto(userService.update(userAssembler.mapToEntity(userDto)));
         responseUserDto.setMessages(List.of(new MessageDto("Updated user successfully", HttpStatus.OK.value())));
@@ -55,21 +49,15 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<@NonNull UserDto> getUserById(@PathVariable Integer id) {
         final UserDto user = userAssembler.mapToDto(userService.getById(id));
         user.setMessages(List.of(new MessageDto("Fetched Successfully", HttpStatus.OK.value())));
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseListDto> getAllUsers() {
-        final List<UserDto> data = userService.findAll().stream().map(userAssembler::mapToDto)
-                .toList();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseListDto.builder()
-                        .data(data)
-                        .messages(List.of(new MessageDto("Fetched Successfully", HttpStatus.OK.value())))
-                        .build());
+    public ResponseEntity<@NonNull PaginatedResponseDto<UserDto>> getAllUsers(@ModelAttribute PageableInput input) {
+        PaginatedResponseDto<UserDto> paginatedResponseDto = userAssembler.paginate(userService.findAll(input).map(userAssembler::mapToDto),List.of(new MessageDto("Fetched Successfully",201)));
+        return ResponseEntity.status(HttpStatus.OK).body(paginatedResponseDto);
     }
-
 }
