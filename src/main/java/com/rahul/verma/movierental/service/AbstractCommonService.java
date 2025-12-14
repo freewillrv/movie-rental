@@ -7,6 +7,7 @@ import com.rahul.verma.movierental.exception.ConflictException;
 import com.rahul.verma.movierental.exception.InternalServerException;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.exception.ValidationFailedException;
+import com.rahul.verma.movierental.util.Constants;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -113,29 +114,38 @@ public class AbstractCommonService<T extends CommonEntity> {
                     , resourceName, updatedEntity.getId()));
         }
     }
+
     public List<T> findAll() {
         return repository.findAll();
     }
-    public Page<@NonNull T> findAll(PageableInput input){
-        Pageable pageable = getPageable(input);
-        return repository.findAll(pageable);
+
+    public Page<@NonNull T> findAll(PageableInput input) {
+        try {
+            Pageable pageable = getPageable(input);
+            return repository.findAll(pageable);
+        } catch (BaseException baseException) {
+            throw baseException;
+        } catch (Exception e) {
+            throw new InternalServerException(e, String.format("error in getting all {} from the database.", resourceName));
+        }
     }
-    protected Pageable getPageable(PageableInput input) {
 
-        String sortBy = sortableAttributes.contains(input.getSortBy())
-                ? input.getSortBy()
-                : "id";
+    private Pageable getPageable(PageableInput input) {
 
-        Sort.Direction direction =
-                "desc".equalsIgnoreCase(input.getDirection()) ?
+        if (!sortableAttributes.contains(input.getSortBy())) {
+            throw new ValidationFailedException(String.format("sorting is not allowed on this attribute {}", input.getSortBy()));
+        }
+        final String sortBy = input.getSortBy();
+        final Sort.Direction direction =
+                Constants.DESC.equalsIgnoreCase(input.getDirection()) ?
                         Sort.Direction.DESC : Sort.Direction.ASC;
-
         return PageRequest.of(
                 input.getPage(),
                 input.getSize(),
                 Sort.by(direction, sortBy)
         );
     }
+
     public T getById(final int id) {
         try {
             return repository.getReferenceById(id);

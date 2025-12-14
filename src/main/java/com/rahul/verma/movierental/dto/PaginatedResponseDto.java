@@ -1,22 +1,19 @@
 package com.rahul.verma.movierental.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PaginatedResponseDto<T> {
-    private List<T> data;
-
+public class PaginatedResponseDto extends  ResponseListDto{
     private Integer pageNumber;
     private Integer pageSize;
     private Long totalItems;
     private Integer totalPages;
-
-    private List<MessageDto> messages;
-    private Integer statusCode;
 }

@@ -5,7 +5,7 @@ import com.rahul.verma.movierental.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserAssembler extends CommonAssembler {
+public class UserAssembler {
 
     public User mapToEntity(final UserDto dto) {
         User u = new User();
