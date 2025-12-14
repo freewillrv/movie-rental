@@ -1,15 +1,15 @@
 package com.rahul.verma.movierental.service.impl;
 
-import com.rahul.verma.movierental.dto.MessageDto;
-import com.rahul.verma.movierental.dto.ResponseDto;
-import com.rahul.verma.movierental.dto.ResponseListDto;
-import com.rahul.verma.movierental.dto.UserDto;
+import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.entity.User;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.repository.UserRepository;
 import com.rahul.verma.movierental.service.AbstractCommonService;
 import com.rahul.verma.movierental.service.UserService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,6 +34,5 @@ public class UserServiceImpl extends AbstractCommonService<User> implements User
         );
         return user;
     }
-
 }
 
