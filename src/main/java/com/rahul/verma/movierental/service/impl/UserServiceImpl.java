@@ -3,6 +3,7 @@ package com.rahul.verma.movierental.service.impl;
 import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.entity.User;
 import com.rahul.verma.movierental.exception.NotFoundException;
+import com.rahul.verma.movierental.exception.ValidationFailedException;
 import com.rahul.verma.movierental.repository.UserRepository;
 import com.rahul.verma.movierental.service.AbstractCommonService;
 import com.rahul.verma.movierental.service.UserService;
@@ -33,6 +34,19 @@ public class UserServiceImpl extends AbstractCommonService<User> implements User
                 cryptoService.hashPassword(user.getPassword().toCharArray())
         );
         return user;
+    }
+    @Override
+    protected void validateCreate(User user){
+        if(user.getUserName()==null)
+        {
+            throw new ValidationFailedException("UserName can not be empty while creating the user");
+        } else if(user.getPassword()==null)
+        {
+            throw new ValidationFailedException("password can not be empty while creating the user");
+        } else if(user.getEmailId()==null)
+        {
+            throw new ValidationFailedException("emailId can not be empty while creating the user");
+        }
     }
 }
 
