@@ -7,6 +7,8 @@ docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=mysqlpassword -p 3306:3
 
 # MySQL Setup a schema
 CREATE SCHEMA `movie_rental` DEFAULT CHARACTER SET utf16 ;
+Command to connect
+mysql -h 127.0.0.1 -P 3306 -u root -p
 
 
 #Common commands
