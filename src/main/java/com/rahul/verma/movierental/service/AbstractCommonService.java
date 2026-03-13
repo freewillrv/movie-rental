@@ -1,18 +1,25 @@
 package com.rahul.verma.movierental.service;
 
+import com.rahul.verma.movierental.dto.*;
 import com.rahul.verma.movierental.entity.CommonEntity;
 import com.rahul.verma.movierental.exception.BaseException;
 import com.rahul.verma.movierental.exception.ConflictException;
 import com.rahul.verma.movierental.exception.InternalServerException;
 import com.rahul.verma.movierental.exception.NotFoundException;
 import com.rahul.verma.movierental.exception.ValidationFailedException;
+import com.rahul.verma.movierental.util.Constants;
+import lombok.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -112,6 +119,33 @@ public class AbstractCommonService<T extends CommonEntity> {
         return repository.findAll();
     }
 
+    public Page<@NonNull T> findAll(PageableInput input) {
+        try {
+            Pageable pageable = getPageable(input);
+            return repository.findAll(pageable);
+        } catch (BaseException baseException) {
+            throw baseException;
+        } catch (Exception e) {
+            throw new InternalServerException(e, String.format("error in getting all {} from the database.", resourceName));
+        }
+    }
+
+    private Pageable getPageable(PageableInput input) {
+
+        if (!sortableAttributes.contains(input.getSortBy())) {
+            throw new ValidationFailedException(String.format("sorting is not allowed on this attribute {}", input.getSortBy()));
+        }
+        final String sortBy = input.getSortBy();
+        final Sort.Direction direction =
+                Constants.DESC.equalsIgnoreCase(input.getDirection()) ?
+                        Sort.Direction.DESC : Sort.Direction.ASC;
+        return PageRequest.of(
+                input.getPage(),
+                input.getSize(),
+                Sort.by(direction, sortBy)
+        );
+    }
+
     public T getById(final int id) {
         try {
             return repository.getReferenceById(id);
@@ -125,8 +159,5 @@ public class AbstractCommonService<T extends CommonEntity> {
                     , resourceName, id));
         }
     }
-
-    // pageable and page
-    // finadAll
 
 }

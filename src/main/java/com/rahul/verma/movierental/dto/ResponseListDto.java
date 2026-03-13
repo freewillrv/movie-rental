@@ -20,4 +20,5 @@ import java.util.List;
 public class ResponseListDto {
     List data;
     List<MessageDto> messages;
+
 }
